@@ -21,6 +21,7 @@ if st.session_state["sesion_iniciada"]:
 
     opciones = [
         "Ventas",
+        "Proveedores",
         "Información"
     ]
 
@@ -32,6 +33,10 @@ if st.session_state["sesion_iniciada"]:
     # Mostrar módulo de ventas
     if seleccion == "Ventas":
         mostrar_venta()
+
+    # Mostrar módulo de proveedores
+    elif seleccion == "Proveedores":
+        mostrar_proveedores()
 
     # Mostrar módulo de información
     elif seleccion == "Información":
@@ -50,4 +55,3 @@ if st.session_state["sesion_iniciada"]:
 else:
     # Si no hay sesión iniciada, mostrar login
     login()
-
