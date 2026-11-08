@@ -1,57 +1,52 @@
-import mysql.connector 
+import streamlit as st
+from modulos.login import login
+from modulos.VENTAS import mostrar_venta
 
-import streamlit as st 
+# Inicializar variables de sesión
+if "sesion_iniciada" not in st.session_state:
+    st.session_state["sesion_iniciada"] = False
 
-st.title("Conexión con base de datos MySQL") 
+if "usuario" not in st.session_state:
+    st.session_state["usuario"] = ""
 
-# Obtener las credenciales almacenadas en Streamlit Secrets 
+# Comprobar si el usuario inició sesión
+if st.session_state["sesion_iniciada"]:
 
-host = st.secrets["mysql"]["host"] 
+    st.sidebar.title("Menú")
 
-port = st.secrets["mysql"]["port"] 
+    st.sidebar.write(
+        f"Usuario: {st.session_state['usuario']}"
+    )
 
-user = st.secrets["mysql"]["user"] 
+    opciones = [
+        "Ventas",
+        "Información"
+    ]
 
-password = st.secrets["mysql"]["password"] 
+    seleccion = st.sidebar.selectbox(
+        "Seleccione una opción",
+        opciones
+    )
 
-database = st.secrets["mysql"]["database"] 
+    # Mostrar módulo de ventas
+    if seleccion == "Ventas":
+        mostrar_venta()
 
-# Intentar establecer la conexión 
+    # Mostrar módulo de información
+    elif seleccion == "Información":
+        st.header("Información del sistema")
+        st.write(
+            "Aplicación desarrollada durante "
+            "el Laboratorio de SGI."
+        )
 
-try: 
+    # Cerrar sesión
+    if st.sidebar.button("Cerrar sesión"):
+        st.session_state["sesion_iniciada"] = False
+        st.session_state["usuario"] = ""
+        st.rerun()
 
-    conn = mysql.connector.connect( 
+else:
+    # Si no hay sesión iniciada, mostrar login
+    login()
 
-        host=host, 
-
-        port=port, 
-
-        user=user, 
-
-        password=password, 
-
-        database=database 
-
-    ) 
-
-    # Verificar si la conexión fue exitosa 
-
-    if conn.is_connected(): 
-
-        st.success("Conexión exitosa a la base de datos MySQL.") 
-
-    else: 
-
-        st.error("No se pudo conectar a la base de datos.") 
-
-except mysql.connector.Error as err: 
-
-    # Mostrar el error si la conexión falla 
-
-    st.error(f"Error al conectar con la base de datos: {err}") 
-
-finally: 
-
-    if "conn" in locals() and conn.is_connected(): 
-
-        conn.close() 
